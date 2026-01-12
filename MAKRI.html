@@ -2,344 +2,348 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe: Anand Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>A Celestial Celebration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #020617;
-            --card: rgba(255, 255, 255, 0.03);
-            --primary: #38bdf8; 
-            --secondary: #fb7185; 
-            --accent: #818cf8;
-            --text: #f8fafc;
+            --gold: #e5c07b;
+            --white: #ffffff;
+            --bg: #030304;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { 
+            -webkit-tap-highlight-color: transparent; 
+            box-sizing: border-box; 
+            user-select: none;
+            touch-action: none;
+        }
 
-        body {
-            font-family: 'Outfit', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background-color: var(--bg);
+            color: var(--white);
+            font-family: 'Montserrat', sans-serif;
             overflow: hidden;
         }
 
-        /* Animated Background */
+        /* Cinematic Background */
         #bg-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: radial-gradient(circle at center, #1e1b4b 0%, #020617 100%);
+            inset: 0;
+            z-index: 1;
         }
 
-        /* Container & Glassmorphism */
-        .glass-panel {
-            background: var(--card);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 32px;
-            padding: 40px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            z-index: 10;
+        .vignette {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.8) 100%);
+            z-index: 2;
+            pointer-events: none;
         }
 
-        .screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .screen.active { display: flex; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h1 {
-            font-size: 4rem;
-            font-weight: 900;
-            background: linear-gradient(to right, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-
-        /* The Board */
-        .board {
-            display: grid;
-            grid-template-columns: repeat(3, 110px);
-            grid-template-rows: repeat(3, 110px);
-            gap: 12px;
-            margin: 25px 0;
-        }
-
-        .cell {
-            width: 110px;
-            height: 110px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            cursor: pointer;
+        /* Layers */
+        .layer {
+            position: fixed;
+            inset: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 3rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 10;
+            pointer-events: none;
+            text-align: center;
         }
 
-        .cell:hover:not(.taken) {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-            border-color: var(--primary);
+        /* Cinematic Intro Text */
+        .intro-text {
+            font-size: clamp(1rem, 5vw, 1.5rem);
+            font-weight: 200;
+            letter-spacing: 0.8em;
+            text-transform: uppercase;
+            opacity: 0;
+            filter: blur(10px);
         }
 
-        .cell.x { color: var(--secondary); text-shadow: 0 0 20px var(--secondary); }
-
-        /* Anand's Visuals */
-        .anand-avatar {
-            width: 80%;
-            height: 80%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--primary);
-            box-shadow: 0 0 15px var(--primary);
-            animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), pulse 2s infinite;
+        .animate-intro {
+            animation: bloom 5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
-        @keyframes bounceIn {
-            0% { transform: scale(0); }
-            70% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        @keyframes bloom {
+            0% { opacity: 0; transform: scale(0.9); filter: blur(20px); letter-spacing: 1.2em; }
+            40% { opacity: 1; filter: blur(0px); transform: scale(1); letter-spacing: 0.8em; }
+            70% { opacity: 1; filter: blur(0px); transform: scale(1); }
+            100% { opacity: 0; transform: scale(1.1); filter: blur(10px); }
         }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(56, 189, 248, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+        /* Glassmorphism Button */
+        .btn-container {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: auto;
         }
 
-        /* Buttons */
-        .btn {
-            padding: 16px 48px;
-            font-family: inherit;
-            font-weight: 600;
-            font-size: 1.1rem;
+        .btn-container.active { opacity: 1; transform: translateY(0); }
+
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            color: var(--white);
+            padding: 22px 60px;
+            font-size: 0.75rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
             border-radius: 100px;
-            border: none;
             cursor: pointer;
-            background: var(--text);
-            color: var(--bg);
-            transition: all 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            transition: all 0.3s;
         }
 
-        .btn:hover {
-            transform: scale(1.05);
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.5);
+        .glass-btn:active { transform: scale(0.94); background: rgba(255,255,255,0.08); }
+
+        /* Enhanced Game Stars */
+        .star-entity {
+            position: absolute;
+            width: 80px; height: 80px;
+            z-index: 50;
+            display: flex; justify-content: center; align-items: center;
+            pointer-events: auto;
         }
 
-        /* Result Styles */
-        .result-title { font-size: 3.5rem; margin-bottom: 20px; }
-        .win { color: var(--primary); }
-        .lose { color: var(--secondary); }
-        
-        /* Shake effect for losing */
-        .shake { animation: shake 0.5s linear; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+        .star-entity svg {
+            width: 30px; height: 30px;
+            filter: drop-shadow(0 0 15px var(--gold));
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Final Reveal Panel */
+        .final-panel {
+            background: rgba(3, 3, 4, 0.9);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: opacity 2s ease;
+            flex-direction: column;
+            padding: 40px;
+        }
+
+        .final-panel.visible { opacity: 1; pointer-events: auto; }
+
+        /* Gold/White Typography */
+        .wish-box {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 2.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .gold-title {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--gold);
+            font-size: clamp(2.5rem, 10vw, 4rem);
+            display: block;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #f9e29d 0%, #d4af37 50%, #f9e29d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+        }
+
+        .white-sub {
+            color: var(--white);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 200;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            opacity: 0.9;
+        }
+
+        .hint-text {
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        #flash-overlay {
+            position: fixed;
+            inset: 0;
+            background: #fff;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
+    <div id="flash-overlay"></div>
+    <div class="vignette"></div>
     <canvas id="bg-canvas"></canvas>
-    <audio id="loseSound" src="anand_voice.aac"></audio>
 
-    <div class="glass-panel">
-        <div class="screen active" id="menu-screen">
-            <h1>MEGAMIND ANAND</h1>
-            <p style="margin-bottom: 30px; color: #94a3b8;">The most advanced Tic-Tac-Toe AI ever built.</p>
-            <button class="btn" onclick="startGame()">ARE YOU READY?</button>
+    <div class="layer"><div id="intro" class="intro-text">Sughamm ahnoii..</div></div>
+
+    <div class="layer">
+        <div id="ui-stage" class="btn-container">
+            <button class="glass-btn" id="trigger-start">Ready ahno?</button>
         </div>
+    </div>
 
-        <div class="screen" id="game-screen">
-            <div id="status" style="font-size: 0.9rem; letter-spacing: 2px; color: var(--primary);">YOUR TURN (X)</div>
-            <div class="board" id="board">
-                <div class="cell" data-index="0"></div>
-                <div class="cell" data-index="1"></div>
-                <div class="cell" data-index="2"></div>
-                <div class="cell" data-index="3"></div>
-                <div class="cell" data-index="4"></div>
-                <div class="cell" data-index="5"></div>
-                <div class="cell" data-index="6"></div>
-                <div class="cell" data-index="7"></div>
-                <div class="cell" data-index="8"></div>
-            </div>
-            <button class="btn" style="padding: 10px 30px; font-size: 0.8rem;" onclick="resetGame()">SURRENDER</button>
-        </div>
-
-        <div class="screen" id="result-screen">
-            <h2 class="result-title" id="res-title">DRAW</h2>
-            <p id="res-desc" style="margin-bottom: 30px; color: #94a3b8;"></p>
-            <button class="btn" onclick="startGame()">PLAY AGAIN</button>
+    <div id="final-panel" class="layer final-panel">
+        <div id="status-msg" class="hint-text"></div>
+        <div id="wish-box" class="wish-box">
+            <span class="gold-title">Happy Birthday</span>
+            <span class="white-sub">to you dii..</span>
         </div>
     </div>
 
     <script>
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
-        const statusText = document.getElementById('status');
-        const boardCells = document.querySelectorAll('.cell');
-        const loseSound = document.getElementById('loseSound');
-        
-        let board = ["", "", "", "", "", "", "", "", ""];
-        const player = "X";
-        const anand = "O";
-        let isGameActive = false;
+        let bgStars = [];
+        const dpr = window.devicePixelRatio || 1;
 
-        // 1. Particle Background Logic
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.onresize = resize; resize();
+        function resize() {
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            ctx.scale(dpr, dpr);
+        }
 
-        let particles = [];
-        for(let i=0; i<100; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2, speed: Math.random()*0.5 });
-        function animateBg() {
-            ctx.clearRect(0,0,canvas.width, canvas.height);
-            ctx.fillStyle = "white";
-            particles.forEach(p => {
+        function initStars() {
+            bgStars = Array(80).fill().map(() => ({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                size: Math.random() * 1.5,
+                o: Math.random(),
+                speed: Math.random() * 0.1 + 0.05
+            }));
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            bgStars.forEach(s => {
+                ctx.fillStyle = `rgba(255,255,255,${s.o})`;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
                 ctx.fill();
-                p.y -= p.speed;
-                if(p.y < 0) p.y = canvas.height;
+                s.y -= s.speed;
+                if(s.y < 0) s.y = window.innerHeight;
             });
-            requestAnimationFrame(animateBg);
-        }
-        animateBg();
-
-        // 2. Game Navigation
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+            requestAnimationFrame(draw);
         }
 
-        function startGame() {
-            board = ["", "", "", "", "", "", "", "", ""];
-            boardCells.forEach(c => { c.innerHTML = ""; c.className = "cell"; });
-            isGameActive = true;
-            statusText.innerText = "YOUR TURN (X)";
-            showScreen('game-screen');
+        window.addEventListener('resize', resize);
+        resize(); initStars(); draw();
+
+        setTimeout(() => document.getElementById('intro').classList.add('animate-intro'), 800);
+        setTimeout(() => document.getElementById('ui-stage').classList.add('active'), 5500);
+
+        const startBtn = document.getElementById('trigger-start');
+        startBtn.onclick = () => {
+            document.getElementById('ui-stage').classList.remove('active');
+            setTimeout(() => spawnWave(2), 600); 
+        };
+
+        let wave = 1;
+        let caught = 0;
+
+        function spawnWave(speed) {
+            caught = 0;
+            for(let i=0; i<5; i++) setTimeout(() => createStar(speed), i * 250);
         }
 
-        function resetGame() { showScreen('menu-screen'); }
+        function createStar(speed) {
+            const el = document.createElement('div');
+            el.className = 'star-entity';
+            const x = Math.random() * (window.innerWidth - 100) + 50;
+            const y = Math.random() * (window.innerHeight - 150) + 75;
+            el.style.left = x + 'px';
+            el.style.top = y + 'px';
+            
+            let dx = (Math.random() - 0.5) * speed;
+            let dy = (Math.random() - 0.5) * speed;
 
-        // 3. Gameplay Logic
-        boardCells.forEach(c => c.addEventListener('click', (e) => {
-            const idx = e.target.dataset.index;
-            if(!isGameActive || board[idx] !== "") return;
+            const move = () => {
+                let curX = parseFloat(el.style.left);
+                let curY = parseFloat(el.style.top);
+                if(curX < 20 || curX > window.innerWidth - 80) dx *= -1;
+                if(curY < 60 || curY > window.innerHeight - 100) dy *= -1;
+                el.style.left = (curX + dx) + 'px';
+                el.style.top = (curY + dy) + 'px';
+                if(el.parentElement) requestAnimationFrame(move);
+            };
 
-            makeMove(idx, player);
-            if(checkWin(board, player)) return end('win');
-            if(isBoardFull(board)) return end('draw');
+            el.innerHTML = `<svg viewBox="0 0 24 24"><path fill="#e5c07b" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+            
+            el.onpointerdown = (e) => {
+                e.stopPropagation();
+                el.style.pointerEvents = 'none';
+                el.style.transform = 'scale(2) rotate(45deg)';
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 400);
+                caught++;
+                if(caught === 5) setTimeout(handleNext, 600);
+            };
 
-            statusText.innerText = "ANAND IS ANALYZING...";
-            isGameActive = false; // Prevent player from clicking during AI turn
+            document.body.appendChild(el);
+            move();
+        }
 
+        function handleNext() {
+            const panel = document.getElementById('final-panel');
+            const msg = document.getElementById('status-msg');
+
+            if(wave === 1) {
+                wave = 2;
+                panel.classList.add('visible');
+                msg.innerText = "Ellam pidichalo Kazhiv thanne!";
+                setTimeout(() => {
+                    msg.innerText = "Anaal ithude pidikkk";
+                    setTimeout(() => {
+                        panel.classList.remove('visible');
+                        setTimeout(() => spawnWave(4), 800);
+                    }, 1800);
+                }, 1500);
+            } else {
+                showFinal();
+            }
+        }
+
+        function showFinal() {
+            const flash = document.getElementById('flash-overlay');
+            const panel = document.getElementById('final-panel');
+            const msg = document.getElementById('status-msg');
+            const wishBox = document.getElementById('wish-box');
+
+            flash.style.opacity = '1';
+            setTimeout(() => flash.style.opacity = '0', 600);
+
+            panel.classList.add('visible');
+            msg.innerText = "Did you know today is a special day?";
+            
             setTimeout(() => {
-                const bestIdx = minimax(board, anand).index;
-                makeMove(bestIdx, anand);
-                if(checkWin(board, anand)) end('lose');
-                else if(isBoardFull(board)) end('draw');
-                else {
-                    statusText.innerText = "YOUR TURN (X)";
-                    isGameActive = true;
-                }
-            }, 800);
-        }));
-
-        function makeMove(idx, p) {
-            board[idx] = p;
-            const cell = boardCells[idx];
-            cell.classList.add('taken');
-            if(p === player) {
-                cell.innerText = "X";
-                cell.classList.add('x');
-            } else {
-                const img = document.createElement('img');
-                img.src = "anand.jpg";
-                img.className = "anand-avatar";
-                cell.appendChild(img);
-            }
-        }
-
-        function end(res) {
-            const title = document.getElementById('res-title');
-            const desc = document.getElementById('res-desc');
-            const panel = document.querySelector('.glass-panel');
-
-            if(res === 'win') {
-                title.innerText = "YOU WON!";
-                title.className = "result-title win";
-                desc.innerText = "You have bypassed Anand's logic circuits.";
-                loseSound.play();
-            } else if(res === 'lose') {
-                title.innerText = "DEFEATED";
-                title.className = "result-title lose";
-                desc.innerText = "Anand predicted every move you made.";
-                panel.classList.add('shake');
-                setTimeout(() => panel.classList.remove('shake'), 500);
-            } else {
-                title.innerText = "DRAW";
-                title.className = "result-title";
-                desc.innerText = "A digital stalemate.";
-            }
-            setTimeout(() => showScreen('result-screen'), 1000);
-        }
-
-        // 4. Intelligence (Minimax)
-        function checkWin(b, p) {
-            const ways = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            return ways.some(w => w.every(i => b[i] === p));
-        }
-        function isBoardFull(b) { return b.every(s => s !== ""); }
-
-        function minimax(newBoard, p) {
-            const avail = newBoard.map((s,i) => s === "" ? i : null).filter(s => s !== null);
-            if(checkWin(newBoard, player)) return {score: -10};
-            if(checkWin(newBoard, anand)) return {score: 10};
-            if(avail.length === 0) return {score: 0};
-
-            const moves = [];
-            for(let i=0; i<avail.length; i++) {
-                let move = {index: avail[i]};
-                newBoard[avail[i]] = p;
-                move.score = minimax(newBoard, p === anand ? player : anand).score;
-                newBoard[avail[i]] = "";
-                moves.push(move);
-            }
-            let bestMove;
-            if(p === anand) {
-                let bestScore = -Infinity;
-                moves.forEach((m, i) => { if(m.score > bestScore) { bestScore = m.score; bestMove = i; }});
-            } else {
-                let bestScore = Infinity;
-                moves.forEach((m, i) => { if(m.score < bestScore) { bestScore = m.score; bestMove = i; }});
-            }
-            return moves[bestMove];
+                // First phase: The joke
+                msg.innerHTML = "Inu Tuesday ahn... 😭";
+                
+                setTimeout(() => {
+                    // Second phase: The transition
+                    msg.innerHTML = "Inu Tuesday ahn... 😭<br><br><span style='color: var(--gold); text-transform: lowercase; font-style: italic;'>(jokes aside)</span>";
+                    
+                    setTimeout(() => {
+                        // Third phase: Reveal Birthday Wish
+                        msg.style.opacity = '0';
+                        setTimeout(() => {
+                            msg.style.display = 'none';
+                            wishBox.style.opacity = '1';
+                            wishBox.style.transform = 'translateY(0)';
+                        }, 500);
+                    }, 2500);
+                }, 2000);
+            }, 2500);
         }
     </script>
 </body>
